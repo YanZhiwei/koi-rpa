@@ -1,4 +1,5 @@
-from dataclasses import dataclass
+import json
+from dataclasses import asdict, dataclass
 
 from models.boss import Boss
 from models.job_summary import JobSummary
@@ -11,4 +12,9 @@ class Job:
     boss: Boss = None
     detail: str = ""
     posted_date: str = ""
-    boss: Boss = None
+
+    def to_jon(self):
+        return json.dumps(self.to_dict(), default=str)
+
+    def to_dict(self):
+        return asdict(self)

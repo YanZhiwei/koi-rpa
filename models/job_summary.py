@@ -1,4 +1,5 @@
-from dataclasses import dataclass
+import json
+from dataclasses import asdict, dataclass
 from typing import List
 
 
@@ -12,3 +13,9 @@ class JobSummary:
     tags: List[str] = None
     salary: str = ""
     language: str = ""
+
+    def to_jon(self):
+        return json.dumps(self.to_dict(), default=str)
+
+    def to_dict(self):
+        return asdict(self)
