@@ -116,7 +116,17 @@ class Zhipin(object):
             sleep_time = random.randint(1, 10)
             page.wait_for_timeout(sleep_time * 1000)  # Convert to milliseconds
             page.close()
-
+            
+    def chat_input(self, url:str,text:str):
+        if not self.browser:
+            self.__instance_browser()
+        page = self.context.new_page()
+        page.goto(url, wait_until="domcontentloaded")
+        page.wait_for_selector(".btn-startchat")
+        page.locator(".btn-startchat").nth(0).click()
+        if page.locator(".boss-login-dialog").is_visible():
+                raise Exception("请登录后继续")
+        
     def __get__job_id(self, job_url):
         parsed_url = urlparse(job_url)
         path = parsed_url.path.split("/")[-1].split("?")[0]
