@@ -50,8 +50,8 @@ def create_job(job: Job):
 
 
 def main():
-    zhipin = Zhipin("北京")
-    zhipin.chat_input("https://www.zhipin.com/job_detail/5f96fdf68f0233441HN529m8FFJT.html?ka=index_rcmd_job_1","python")
+    zhipin = Zhipin("北京",True)
+    zhipin.chat_input("https://www.zhipin.com/job_detail/9577992d204093ea0XF73d-5Flo~.html?securityId=OjIYLH-TsU9K1-01TGb32qbqAb4HoizOUpf1kozEaNBtIQe7wowWrKXjQvqvAJsDYKj7wN4-YwlxkJ7LLoCnZmeoY6MgdQER9vVq1a4TyrpjvighwZwH","python")
     sleep(10)
     # result = zhipin.search("python")
     # count: int = len(result)

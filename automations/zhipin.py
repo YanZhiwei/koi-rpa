@@ -12,11 +12,12 @@ from models.job_summary import JobSummary
 
 class Zhipin(object):
 
-    def __init__(self, city: str):
+    def __init__(self, city: str,persistent:bool=False):
         self.url = "https://www.zhipin.com/"
         self.city = city
         self.browser = None
         self.context = None
+        self.persistent=persistent
 
     def __del__(self):
         self.browser.close()
@@ -26,13 +27,23 @@ class Zhipin(object):
         if chrome_path is None:
             raise Exception("chrome path not found")
         p = sync_playwright().start()
-        self.browser = p.chromium.launch(
-            executable_path=chrome_path,
-            headless=False,
-            args=["--disable-infobars", "--start-maximized"],
-            ignore_default_args=["--enable-automation"],
-        )
-        self.context = self.browser.new_context(no_viewport=True)
+        if(self.persistent==True):
+            self.browser = p.chromium.launch_persistent_context(
+                executable_path=chrome_path,
+                headless=False,
+                args=["--disable-infobars", "--start-maximized"],
+                ignore_default_args=["--enable-automation"],
+                user_data_dir="C:\\Users\\YanZh\\AppData\\Local\\Google\\Chrome\\User Data"  # Windows的默认路径
+            )
+        else:
+            self.browser = p.chromium.launch(
+                executable_path=chrome_path,
+                headless=False,
+                args=["--disable-infobars", "--start-maximized"],
+                ignore_default_args=["--enable-automation"],
+                user_data_dir="C:\\Users\\YanZh\\AppData\\Local\\Google\\Chrome\\User Data"  # Windows的默认路径
+            )
+            self.context = self.browser.new_context(no_viewport=True)
 
     def close_login_dialog_if_exists(self, page: Page):
         try:
@@ -120,13 +131,16 @@ class Zhipin(object):
     def chat_input(self, url:str,text:str):
         if not self.browser:
             self.__instance_browser()
-        page = self.context.new_page()
+        page = self.browser.new_page()
         page.goto(url, wait_until="domcontentloaded")
         page.wait_for_selector(".btn-startchat")
         page.locator(".btn-startchat").nth(0).click()
         if page.locator(".boss-login-dialog").is_visible():
                 raise Exception("请登录后继续")
-        
+        page.locator('#chat-input').fill(text)
+        btn_send = page.locator("button:has-text('发送')")
+        btn_send.click()
+
     def __get__job_id(self, job_url):
         parsed_url = urlparse(job_url)
         path = parsed_url.path.split("/")[-1].split("?")[0]
