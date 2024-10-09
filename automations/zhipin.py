@@ -12,9 +12,8 @@ from models.job_summary import JobSummary
 
 class Zhipin(object):
 
-    def __init__(self, city: str,persistent:bool=False):
+    def __init__(self,persistent:bool=False):
         self.url = "https://www.zhipin.com/"
-        self.city = city
         self.browser = None
         self.context = None
         self.persistent=persistent
@@ -41,7 +40,6 @@ class Zhipin(object):
                 headless=False,
                 args=["--disable-infobars", "--start-maximized"],
                 ignore_default_args=["--enable-automation"],
-                user_data_dir="C:\\Users\\YanZh\\AppData\\Local\\Google\\Chrome\\User Data"  # Windows的默认路径
             )
             self.context = self.browser.new_context(no_viewport=True)
 
@@ -52,7 +50,7 @@ class Zhipin(object):
         except Exception as e:
             print(e)
 
-    def search(self, keyword: str) -> List[JobSummary]:
+    def search(self, city:str,keyword: str) -> List[JobSummary]:
         job_summarys: List[JobSummary] = []
         if not self.browser:
             self.__instance_browser()
